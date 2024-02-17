@@ -5,16 +5,14 @@ import Header from "../Components/Header/Header";
 
 const RoutesConfig = () => {
   return (
-    <div>
-      <Router>
-        <Header />
-        <Routes>
-          <Route path="/" element={<Home />}></Route>
-          {/* <Route path="/cart" element={<Home />}></Route> */}
-          <Route path="/products" element={<Products />}></Route>
-        </Routes>
-      </Router>
-    </div>
+    <Router>
+      <Header />
+      <Routes>
+        <Route path="/" element={<Home />}></Route>
+        {/* <Route path="/cart" element={<Home />}></Route> */}
+        <Route path="/products" element={<Products />}></Route>
+      </Routes>
+    </Router>
   );
 };
 

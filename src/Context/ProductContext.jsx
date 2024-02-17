@@ -7,23 +7,25 @@ const ProductPageProvider = ({ children }) => {
   const [currentPage, setCurrentPage] = useState(1);
   const [productsPerPage, setProductsPerPage] = useState(5);
   const [totalPages, setTotalPages] = useState(1);
+  // const [dark, setDark] = useState(false);
   // Product API call
   useEffect(() => {
     (async () => {
       try {
-        const results = await fetch(api, {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-          },
-        });
+        const results = await fetch(api);
         const data = await results.json();
-        setProdcuts(data);
+        console.log(data);
+        setProdcuts(data.products);
       } catch (error) {
         console.error("Something went wrong", error);
       }
     })();
   }, []);
+  // changeTheme = () => {
+  //   dark
+  //     ? document.getElementsByTagName("body")[0].classList.add("dark")
+  //     : document.getElementsByTagName("body")[0].classList.remove("dark");
+  // };
   // Page count
   useEffect(() => {
     setTotalPages(Math.ceil(prodcuts.length / productsPerPage));
@@ -36,8 +38,9 @@ const ProductPageProvider = ({ children }) => {
   // change page
   const changePage = (pageNumber) => setCurrentPage(pageNumber);
   // change Product per page
-  const changeProductPerPage = (perPageNumber) =>
+  const changeProductPerPage = (perPageNumber) => {
     setProductsPerPage(perPageNumber);
+  };
   const value = {
     paginatedProducts,
     currentPage,

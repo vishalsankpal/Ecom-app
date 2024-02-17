@@ -1,8 +1,9 @@
-import React from "react";
+import { useContext } from "react";
 import { Link } from "react-router-dom";
 const Header = () => {
+  // const { changeTheme } = useContext();
   return (
-    <div>
+    <header>
       <div className="logo">
         <Link to="/home">ECOM</Link>
       </div>
@@ -13,7 +14,7 @@ const Header = () => {
           </li>
         </ul>
       </nav>
-    </div>
+    </header>
   );
 };
 

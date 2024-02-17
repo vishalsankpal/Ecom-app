@@ -1,22 +1,103 @@
-import React, { useContext } from "react";
+import { useCallback, useContext, useEffect } from "react";
 import { ProductPageContext } from "../Context/ProductContext";
-
+import styled from "styled-components";
+import Pagination from "../Components/Pagination/Pagination";
+import { useNavigate, useSearchParams } from "react-router-dom";
 const Products = () => {
-  const { paginatedProducts } = useContext(ProductPageContext);
-  console.log(paginatedProducts);
+  const {
+    paginatedProducts,
+    changeProductPerPage,
+    productsPerPage,
+    totalPages,
+    currentPage,
+    changePage,
+  } = useContext(ProductPageContext);
+  const [queryParams, setQueryParams] = useSearchParams();
+  const navigateTo = useNavigate();
+  const name = queryParams.get("perPage") || "";
+  useEffect(() => {
+    if (name) {
+      handleProductPerChange(Number(name));
+    } else {
+      const params = new URLSearchParams();
+      params.append("perPage", productsPerPage);
+      navigateTo({ search: params.toString() });
+    }
+  }, []);
+
+  console.log(totalPages);
+  const renderer = paginatedProducts.map((item) => {
+    return (
+      <ProductContainer key={item.id}>
+        <Image src={item.thumbnail} alt={item.title} />
+        <Title>{item.title}</Title>
+        <ProductDesc>{item.description}</ProductDesc>
+        <button>Add to Cart</button>
+      </ProductContainer>
+    );
+  });
+  const handlePageChange = useCallback(
+    (page) => {
+      changePage(page);
+      navigateTo(page);
+    },
+    [changePage, navigateTo]
+  );
+  const handleProductPerChange = (val) => {
+    setQueryParams((prevParams) => ({
+      ...Object.fromEntries(prevParams),
+      perPage: val,
+    }));
+    changeProductPerPage(Number(val));
+  };
   return (
-    <div>
-      {paginatedProducts &&
-        paginatedProducts.map((item) => (
-          <div key={item.id}>
-            {item.images.map((img, i) => (
-              <img src="https://i.imgur.com/dV4Nklf.jpeg" key={i} />
-            ))}
-            <h2>{item.title}</h2>
-          </div>
-        ))}
-    </div>
+    <>
+      <select onChange={(e) => handleProductPerChange(e.target.value)}>
+        <option value="5" selected={queryParams.get("perPage") === "5"}>
+          5
+        </option>
+        <option value="10" selected={queryParams.get("perPage") === "10"}>
+          10
+        </option>
+        <option value="15" selected={queryParams.get("perPage") === "15"}>
+          15
+        </option>
+      </select>
+      <Container>{paginatedProducts && renderer}</Container>
+      <Pagination
+        totalPages={totalPages}
+        currentPage={currentPage}
+        onClick={handlePageChange}
+      />
+    </>
   );
 };
 
 export default Products;
+const Container = styled.div`
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 15px;
+`;
+const ProductContainer = styled.div`
+  border: 1px solid #ccc;
+  padding: 10px;
+`;
+const Image = styled.img`
+  width: 100%;
+  object-fit: contain;
+  height: 150px;
+`;
+const Title = styled.h2`
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
+`;
+const ProductDesc = styled.p`
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
+`;
