@@ -1,7 +1,9 @@
 import { useContext } from "react";
 import { Link } from "react-router-dom";
+import { CartPageContext } from "../../Context/CartContext";
+
 const Header = () => {
-  // const { changeTheme } = useContext();
+  const { cartItems } = useContext(CartPageContext);
   return (
     <header>
       <div className="logo">
@@ -11,6 +13,9 @@ const Header = () => {
         <ul>
           <li>
             <Link to="/products">Products</Link>
+          </li>
+          <li>
+            <Link to="/cart">{cartItems.length}</Link>
           </li>
         </ul>
       </nav>

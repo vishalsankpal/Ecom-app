@@ -2,7 +2,8 @@ import { useCallback, useContext, useEffect } from "react";
 import { ProductPageContext } from "../Context/ProductContext";
 import styled from "styled-components";
 import Pagination from "../Components/Pagination/Pagination";
-import { useNavigate, useSearchParams } from "react-router-dom";
+import { Link, useNavigate, useSearchParams } from "react-router-dom";
+import { CartPageContext } from "../Context/CartContext";
 const Products = () => {
   const {
     paginatedProducts,
@@ -12,6 +13,7 @@ const Products = () => {
     currentPage,
     changePage,
   } = useContext(ProductPageContext);
+  const { addToCart } = useContext(CartPageContext);
   const [queryParams, setQueryParams] = useSearchParams();
   const navigateTo = useNavigate();
   const name = queryParams.get("perPage") || "";
@@ -29,10 +31,12 @@ const Products = () => {
   const renderer = paginatedProducts.map((item) => {
     return (
       <ProductContainer key={item.id}>
-        <Image src={item.thumbnail} alt={item.title} />
-        <Title>{item.title}</Title>
-        <ProductDesc>{item.description}</ProductDesc>
-        <button>Add to Cart</button>
+        <Link to={`/product/:${item.id}`}>
+          <Image src={item.thumbnail} alt={item.title} />
+          <Title>{item.title}</Title>
+          <ProductDesc>{item.description}</ProductDesc>
+          <button onClick={addToCart}>Add to Cart</button>
+        </Link>
       </ProductContainer>
     );
   });
