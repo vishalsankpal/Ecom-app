@@ -1,12 +1,34 @@
 import { createContext, useEffect, useState } from "react";
-const ProductPageContext = createContext();
-// eslint-disable-next-line react/prop-types
+import * as React from "react";
+interface IContext {
+  paginatedProducts: IProduct[];
+  currentPage: number;
+  totalPages: number;
+  productsPerPage: number;
+  changePage: (pageNumber: number) => void;
+  changeProductPerPage: (pageNumber: number) => void;
+}
+interface IProduct {
+  brand: string;
+  category: string;
+  description: string;
+  discountPercentage: number;
+  id: number;
+  images: string[];
+  price: number;
+  rating: number;
+  stock: number;
+  thumbnail: string;
+  title: string;
+}
+//Question what need to set instead of undefined
+const ProductPageContext = createContext<IContext | undefined>(undefined);
 const api = import.meta.env.VITE_PRODUCT_API;
-const ProductPageProvider = ({ children }) => {
-  const [prodcuts, setProdcuts] = useState([]);
-  const [currentPage, setCurrentPage] = useState(1);
-  const [productsPerPage, setProductsPerPage] = useState(5);
-  const [totalPages, setTotalPages] = useState(1);
+const ProductPageProvider = ({ children }): JSX.Element => {
+  const [prodcuts, setProdcuts] = useState<IProduct[]>([]);
+  const [currentPage, setCurrentPage] = useState<number>(1);
+  const [productsPerPage, setProductsPerPage] = useState<number>(5);
+  const [totalPages, setTotalPages] = useState<number>(1);
   // const [dark, setDark] = useState(false);
   // Product API call
   useEffect(() => {
@@ -21,11 +43,6 @@ const ProductPageProvider = ({ children }) => {
       }
     })();
   }, []);
-  // changeTheme = () => {
-  //   dark
-  //     ? document.getElementsByTagName("body")[0].classList.add("dark")
-  //     : document.getElementsByTagName("body")[0].classList.remove("dark");
-  // };
   // Page count
   useEffect(() => {
     setTotalPages(Math.ceil(prodcuts.length / productsPerPage));
@@ -36,12 +53,12 @@ const ProductPageProvider = ({ children }) => {
     currentPage * productsPerPage
   );
   // change page
-  const changePage = (pageNumber) => setCurrentPage(pageNumber);
+  const changePage = (pageNumber): void => setCurrentPage(pageNumber);
   // change Product per page
-  const changeProductPerPage = (perPageNumber) => {
+  const changeProductPerPage = (perPageNumber): void => {
     setProductsPerPage(perPageNumber);
   };
-  const value = {
+  const value: IContext = {
     paginatedProducts,
     currentPage,
     totalPages,

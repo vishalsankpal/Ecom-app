@@ -3,7 +3,7 @@ import CartContextProvider from "./Context/CartContext";
 import ProductPageProvider from "./Context/ProductContext";
 import RoutesConfig from "./config/routes";
 
-function App() {
+function App(): JSX.Element {
   return (
     <>
       <ProductPageProvider>
