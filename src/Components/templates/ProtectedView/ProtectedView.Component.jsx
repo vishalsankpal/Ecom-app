@@ -3,8 +3,8 @@ const isLogged = false;
 const ProtectedView = ({ children }) => {
   const { pathname } = useLocation();
   console.log({ pathname });
-  if (!isLogged && pathname !== "/logine") {
-    return <Navigate to="/signin" replace={true} />;
+  if (!isLogged && pathname !== "/login") {
+    return <Navigate to="/signInPage" replace={true} />;
   }
   return children;
 };

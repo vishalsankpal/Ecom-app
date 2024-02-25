@@ -25,21 +25,19 @@ const Products = () => {
       params.append("perPage", productsPerPage);
       navigateTo({ search: params.toString() });
     }
-  }, []);
+  }, [name, productsPerPage, navigateTo]);
 
-  console.log(totalPages);
-  const renderer = paginatedProducts.map((item) => {
-    return (
-      <ProductContainer key={item.id}>
-        <Link to={`/product/:${item.id}`}>
-          <Image src={item.thumbnail} alt={item.title} />
-          <Title>{item.title}</Title>
-          <ProductDesc>{item.description}</ProductDesc>
-          <button onClick={addToCart}>Add to Cart</button>
-        </Link>
-      </ProductContainer>
-    );
-  });
+  const handleProductPerChange = useCallback(
+    (val) => {
+      setQueryParams((prevParams) => ({
+        ...Object.fromEntries(prevParams),
+        perPage: val,
+      }));
+      changeProductPerPage(Number(val));
+    },
+    [changeProductPerPage, setQueryParams]
+  );
+
   const handlePageChange = useCallback(
     (page) => {
       changePage(page);
@@ -47,13 +45,20 @@ const Products = () => {
     },
     [changePage, navigateTo]
   );
-  const handleProductPerChange = (val) => {
-    setQueryParams((prevParams) => ({
-      ...Object.fromEntries(prevParams),
-      perPage: val,
-    }));
-    changeProductPerPage(Number(val));
-  };
+
+  const renderer = paginatedProducts.map((item) => {
+    return (
+      <ProductContainer key={item.id}>
+        <Link to={`/product/${item.id}`}>
+          <Image src={item.thumbnail} alt={item.title} />
+          <Title>{item.title}</Title>
+          <ProductDesc>{item.description}</ProductDesc>
+        </Link>
+        <button onClick={() => addToCart(item)}>Add to Cart</button>
+      </ProductContainer>
+    );
+  });
+
   return (
     <>
       <select onChange={(e) => handleProductPerChange(e.target.value)}>

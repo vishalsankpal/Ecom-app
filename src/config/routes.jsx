@@ -60,18 +60,27 @@
 // };
 
 // export default RoutesConfig;
-import { RouterProvider, createBrowserRouter, Outlet } from "react-router-dom";
-import Vishal from "../Components/Header/Header";
-import Home from "../Pages/Home";
-import Products from "../Pages/Products";
-import Cart from "../Pages/Cart";
-import ProductDetail from "../Pages/ProductDetail";
-import SignInPage from "../Pages/SignIn.Layout";
-import ProtectedView from "../Components/templates/ProtectedView/ProtectedView.Component";
+import React, { Suspense } from "react";
 
+import { RouterProvider, createBrowserRouter, Outlet } from "react-router-dom";
+import Header from "../Components/Header/Header";
+//import ProtectedView from "../Components/templates/ProtectedView/ProtectedView.Component";
+const Home = React.lazy(() => import("../Pages/Home.Layout"));
+const Products = React.lazy(() => import("../Pages/Products.Layout"));
+const Cart = React.lazy(() => import("../Pages/Cart.Layout"));
+const ProductDetail = React.lazy(() => import("../Pages/ProductDetail.Layout"));
+const SignInPage = React.lazy(() => import("../Pages/SignIn.Layout"));
+export const routesMap = {
+  root: "/",
+  home: "/home",
+  products: "/products",
+  cart: "/cart",
+  productDetail: "/product/:productId",
+  signInPage: "/signInPage",
+};
 const Layout = () => (
   <>
-    <Vishal />
+    <Header />
     <Outlet />
   </>
 );
@@ -80,28 +89,56 @@ const appRouter = createBrowserRouter([
     element: <Layout />,
     children: [
       {
-        path: "/",
-        element: <Home />,
-      },
-      {
-        path: "/products",
-        element: <Products />,
-      },
-      {
-        path: "/cart",
+        path: routesMap.root,
         element: (
-          <ProtectedView>
-            <Cart />
-          </ProtectedView>
+          <Suspense fallback={<div className="loader"></div>}>
+            <Home />
+          </Suspense>
         ),
       },
       {
-        path: "/signin",
-        element: <SignInPage />,
+        path: routesMap.home,
+        element: (
+          <Suspense fallback={<div className="loader"></div>}>
+            <Home />
+          </Suspense>
+        ),
       },
       {
-        path: "/product/:productId",
-        element: <ProductDetail />,
+        path: routesMap.products,
+        element: (
+          <Suspense fallback={<div className="loader"></div>}>
+            <Products />
+          </Suspense>
+        ),
+      },
+      {
+        path: routesMap.cart,
+        element: (
+          <Suspense fallback={<div className="loader"></div>}>
+            {/* uncomment below code when protected routes implemented */}
+            {/* <ProtectedView>
+              <Cart />
+            </ProtectedView> */}
+            <Cart />
+          </Suspense>
+        ),
+      },
+      {
+        path: routesMap.signInPage,
+        element: (
+          <Suspense fallback={<div className="loader"></div>}>
+            <SignInPage />
+          </Suspense>
+        ),
+      },
+      {
+        path: routesMap.productDetail,
+        element: (
+          <Suspense fallback={<div className="loader"></div>}>
+            <ProductDetail />
+          </Suspense>
+        ),
       },
     ],
   },

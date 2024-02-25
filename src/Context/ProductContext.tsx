@@ -23,6 +23,11 @@ interface IProduct {
 }
 //Question what need to set instead of undefined
 const ProductPageContext = createContext<IContext | undefined>(undefined);
+//{
+//   "compilerOptions": {
+//     "types": ["vite/client"]
+//   }
+// }
 const api = import.meta.env.VITE_PRODUCT_API;
 const ProductPageProvider = ({ children }): JSX.Element => {
   const [prodcuts, setProdcuts] = useState<IProduct[]>([]);

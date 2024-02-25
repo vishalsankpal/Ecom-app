@@ -1,15 +1,13 @@
-import React, { createContext, useState } from "react";
-export const CartPageContext = createContext();
+import { createContext, useState } from "react";
+const CartPageContext = createContext();
 const CartContextProvider = ({ children }) => {
   const [cartItems, setCartItems] = useState([]);
   const addToCart = (product) => {
     const presentItem = cartItems.find((item) => item.id === product.id);
     if (presentItem) {
       setCartItems((prev) =>
-        prev.map((prevProd) =>
-          prevProd.id === product.id
-            ? { ...prev, qty: presentItem.qty + 1 }
-            : prevProd
+        prev.map((item) =>
+          item.id === product.id ? { ...item, qty: presentItem.qty + 1 } : item
         )
       );
     } else {
@@ -46,6 +44,7 @@ const CartContextProvider = ({ children }) => {
     (total, currentItem) => total + currentItem.price * currentItem.qty,
     0
   );
+  const tax = cartTotal * 0.18;
   const value = {
     cartItems,
     addToCart,
@@ -54,7 +53,9 @@ const CartContextProvider = ({ children }) => {
     numberQty,
     removeProduct,
     cartTotal,
+    tax,
   };
+  console.log(cartItems);
   return (
     <CartPageContext.Provider value={value}>
       {children}
@@ -63,3 +64,4 @@ const CartContextProvider = ({ children }) => {
 };
 
 export default CartContextProvider;
+export { CartPageContext };
